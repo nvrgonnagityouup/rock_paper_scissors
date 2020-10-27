@@ -15,6 +15,11 @@
     };
     //2, function that plays a single round of RPS that takes two params (playerSelection, computerSelection)
     function playRound(playerSelection, computerSelection){
+      //check input
+      if (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors"){
+        return ('WRONG. choose rock, paper, or scissors');
+      }
+
       if (playerSelection === "scissors" && computerSelection === "paper"){
         return ('Yay :) You win! Scissors beat paper.');
       } else if (playerSelection === "paper" && computerSelection === "rock"){
@@ -41,17 +46,18 @@
       console.log('Rock Paper Scissors. Best out of 5.');
       while (round < 6){
         console.log('Round '+ round);
-        let userInput = prompt('Choose 1: paper, scissors, rock');
-        let playerSelection = userInput.toLowerCase();
-        const computerSelection = computerPlay();
-        console.log(`The computer chose ${computerSelection}.`);
+        let userInput = prompt('Choose 1: paper, scissors, rock').toLowerCase();
+        const computerInput = computerPlay();
+        console.log(`The computer chose ${computerInput}.`);
         
-        let result = playRound(playerSelection, computerSelection);
+        let result = playRound(userInput, computerInput);
           console.log(result);
         if (result.includes('win')){
           userWins++;
         } else if (result.includes('lose')){
           compWins++;
+        } else if (result.includes('WRONG')){
+          continue;
         } else {
           draws++;
         };
