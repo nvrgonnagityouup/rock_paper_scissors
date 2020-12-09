@@ -6,22 +6,54 @@
   <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-  <script>
-    //1, function computerPlay that will return either 'Rock', 'Paper', or 'Scissors'
+  
+  <div class='container'>
+    <h1 id='gameTitle'>Rock, Paper, Scissors</h1>
+    <h2 id='rules'>First to 5 Wins</h2>
+    <h3>Choose 1: </h3>
     
-    function computerPlay(options){
+    <div class='choices'>
+      <button id='rock' class='choice'>Rock</button>
+      <button id='paper' class='choice'>Paper</button>
+      <button id='scissors'class='choice'>Scissors</button>
+    </div>
+
+    <div><strong>Computer chose:</strong></div>
+    <div id='compDisplay'> </div>
+
+
+    <div id='roundResults'>
+      <div id='resultDisp'></div>
+    </div>  
+    
+    <div class='labels'>
+      <div id='userWins'>Player Wins</div>
+      <div id='compWins'>Computer Wins</div>
+    </div>    
+    
+    <div id='scoreboard'>
+      <div class = 'score' id='playerScore'>0</div>
+      <div class = 'score' id='computerScore'>0</div>
+    </div>
+
+    <div>
+      <button id='gameReset'>Reset Game</button>
+    </div>
+  </div> 
+
+
+
+  <script>
+
+
+    function computerPlay(){
       var options = ["rock", "paper", "scissors"];
       return options[Math.floor(Math.random()*options.length)]
     };
-    //2, function that plays a single round of RPS that takes two params (playerSelection, computerSelection)
-    function playRound(playerSelection, computerSelection){
-      //check input
-      if (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors"){
-        return ('WRONG. choose rock, paper, or scissors');
-      }
 
+    function playRound(playerSelection, computerSelection) {
       if (playerSelection === "scissors" && computerSelection === "paper"){
-        return ('Yay :) You win! Scissors beat paper.');
+        return ('Yay :] You win! Scissors beat paper.');
       } else if (playerSelection === "paper" && computerSelection === "rock"){
         return ('Hooray! You win! Paper beats rock.');
       } else if (playerSelection === "rock" && computerSelection === "scissors"){
@@ -36,42 +68,151 @@
         return ('Draw! Play again.')
       }
     };
-    
-    function game(){
-      var userWins = 0;
-      var compWins = 0;
-      var draws = 0;
-      var round = 1;
 
-      console.log('Rock Paper Scissors. Best out of 5.');
-      while (round < 6){
-        console.log('Round '+ round);
-        let userInput = prompt('Choose 1: paper, scissors, rock').toLowerCase();
-        const computerInput = computerPlay();
-        console.log(`The computer chose ${computerInput}.`);
-        
-        let result = playRound(userInput, computerInput);
-          console.log(result);
-        if (result.includes('win')){
-          userWins++;
-        } else if (result.includes('lose')){
-          compWins++;
-        } else if (result.includes('WRONG')){
-          continue;
-        } else {
-          draws++;
-        };
-        console.log(`User Wins: ${userWins} | Computer Wins: ${compWins} | Draws: ${draws}`);
-        round++;
-      };
-      if (userWins > compWins){
-        return('YAY YOU WIN!! :D');
-      } else if (compWins === userWins){
-        return('ISSA TIE :S');
-      } else {
-        return('AWW YOU LOSE!! :\'(');
-      }
+    var userWins = 0;
+    var compWins = 0;
+    // create event listener function
+
+    function resetGame() {
+      userWins = 0;
+      document.getElementById('playerScore').innerHTML = '0';
+      compWins = 0;
+      document.getElementById('computerScore').innerHTML = '0';
+      console.log('reset');
     };
+
+    function playGame(e){
+      if (userWins == 5 || compWins == 5) {
+        return;
+      }
+      // scoreboard, have a way to track this globally
+      // var userWins = 0;
+      // var compWins = 0;
+      
+      //var round = 1;
+
+      // get userInput -> get id of clicked button
+      const userInput = e.target.id;
+
+      //get compInput
+      const compInput = computerPlay();      
+
+      // rock, paper, scissors game logic
+      let result = playRound(userInput, compInput);
+      // let didUserWin = false;
+      // TODO: display computer input in ui
+      console.log(result);
+      document.getElementById('compDisplay').innerHTML = compInput;
+      if (result.includes('win')){
+        // TODO: display on ui
+        userWins++;
+        // didUserWin = true;
+        document.getElementById('playerScore').innerHTML = userWins;
+        document.getElementById('resultDisp').textContent = 'You Win !' 
+      } else if (result.includes('lose')){
+        // TODO: display on ui
+        compWins++;
+        document.getElementById('computerScore').innerHTML = compWins;
+        document.getElementById('resultDisp').textContent = 'You Lose!' + String.fromCodePoint(0x1F354)
+
+      } else {
+        // TODO: display on ui
+        document.getElementById('resultDisp').textContent = 'Draw. Play Again!' 
+      
+      };
+
+      if (userWins == 5) {
+        alert('You WIN! YAY')
+      } else if(compWins == 5) {
+    
+        setTimeout(()=>alert('You LOSE. :['), 1);
+      }
+
+      
+    };
+
+    // 1. initialize event listeners
+    // 1a. Get all the DOM objects for the player choices
+    // 1b. add event listener for each dom object
+    const choices = document.querySelectorAll('.choice');
+    choices.forEach(choice => choice.addEventListener('click', playGame));
+
+    //reset button
+    const reset = document.querySelector('#gameReset');
+    // choices.forEach(choice => choice.addEventListener('click', playGame));
+    reset.onclick = () => resetGame();
+
+
+
+
+
+    //OLD CODE~~~~~******
+
+    // //1, function computerPlay that will return either 'Rock', 'Paper', or 'Scissors'
+    // function computerPlay(){
+    //   var options = ["rock", "paper", "scissors"];
+    //   return options[Math.floor(Math.random()*options.length)]
+    // };
+    // //2, function that plays a single round of RPS that takes two params (playerSelection, computerSelection)
+    // function playRound(playerSelection, computerSelection){
+    //   //check input
+    //   if (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors"){
+    //     return ('WRONG. choose rock, paper, or scissors');
+    //   }
+
+    //   if (playerSelection === "scissors" && computerSelection === "paper"){
+    //     return ('Yay :] You win! Scissors beat paper.');
+    //   } else if (playerSelection === "paper" && computerSelection === "rock"){
+    //     return ('Hooray! You win! Paper beats rock.');
+    //   } else if (playerSelection === "rock" && computerSelection === "scissors"){
+    //     return ('Congrats! You win! Rock beats scissors.');
+    //   } else if (playerSelection === "scissors" && computerSelection === "rock"){
+    //     return ('OOF. You lose! Rock beats scissors. ');
+    //   } else if (playerSelection === "paper" && computerSelection === "scissors"){
+    //     return ('big YIKES. You lose! Scissors beat paper.'); 
+    //   } else if (playerSelection === "rock" && computerSelection === "paper"){
+    //     return ('#sad. You lose! Paper beats rock.');
+    //   } else {
+    //     return ('Draw! Play again.')
+    //   }
+    // };
+    
+    // function game(){
+    //   var userWins = 0;
+    //   var compWins = 0;
+    //   var draws = 0;
+    //   var round = 1;
+
+    //   console.log('Rock Paper Scissors. Best out of 5.');
+    //   while (round < 6){
+    //     //chooses user+comp input
+    //     console.log('Round '+ round);
+    //     let userInput = prompt('Choose 1: paper, scissors, rock').toLowerCase();
+    //     const computerInput = computerPlay();
+    //     console.log(`The computer chose ${computerInput}.`);
+    //     ///plays round with user+comp input
+    //     let result = playRound(userInput, computerInput);
+    //     console.log(result);
+    //     if (result.includes('win')){
+    //       userWins++;
+    //     } else if (result.includes('lose')){
+    //       compWins++;
+    //     } else if (result.includes('WRONG')){
+    //       continue;
+    //     } else {
+    //       draws++;
+    //     };
+    //     console.log(`User Wins: ${userWins} | Computer Wins: ${compWins} | Draws: ${draws}`);
+    //     round++;
+    //   };
+    //   if (userWins > compWins){
+    //     return('YAY YOU WIN!! :D');
+    //   } else if (compWins === userWins){
+    //     return('ISSA TIE :S');
+    //   } else {
+    //     return('AWW YOU LOSE!! :\'(');
+    //   }
+    // };
   
   
 
